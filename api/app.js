@@ -34,6 +34,7 @@ app.use(bodyParser.json());
 // all of our routes will be prefixed with /api
 require('./routes/building.routes')(app);
 require('./routes/entry.routes')(app);
+require('./routes/user.routes')(app);
 
 // error handler
 app.use(function(err, req, res, next) {
