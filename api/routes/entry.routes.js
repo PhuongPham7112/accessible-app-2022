@@ -5,7 +5,8 @@ module.exports = app => {
     router.post("/insertEntry", e_controller.create);
     router.put("/updateEntry", e_controller.update);
     router.get("/getEntry", e_controller.get);
-    router.get("/getByBuilding/:name", e_controller.getByBuilding);
-    router.get("/getByType/:type", e_controller.getByType);
+    router.get("/getByBuilding", e_controller.getByBuilding);
+    router.get("/getByType", e_controller.getByType);
     router.delete("/deleteEntry", e_controller.delete);
+    app.use('/api', router);
 }

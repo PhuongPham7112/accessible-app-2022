@@ -1,7 +1,8 @@
 // this file is for methods/functions for api calls related to entry object
 const sql = require("../config/db");
+const geocoder = require("./geocode.controller");
 
-exports.create = (res, req) => {
+exports.create = (req, res, next) => {
     if (!req.body) { 
         res.status(400).send({
             message: "Content cannot be empty"
@@ -12,9 +13,7 @@ exports.create = (res, req) => {
         "SELECT * FROM buildings WHERE building_name=?",
         [req.body.building],
         function (err, data, fields) {
-            if (err) res.send({
-                message: "Building's name might be not in the database yet, please provide this building's profile"
-            });
+            if (err) res.send(err);
         }
     )
 
@@ -36,7 +35,7 @@ exports.create = (res, req) => {
 }
 
 // select a specific point
-exports.get = (req, res) => { 
+exports.get = (req, res, next) => { 
     if (!req.body) {
         res.status(400).send({
             message: "Content cannot be empty"
@@ -44,32 +43,54 @@ exports.get = (req, res) => {
     }
 
     sql.query (
-        "(SELECT * FROM entry_points WHERE (id, building, entry_type) = (?, ?, ?)) UNION (SELECT building_address FROM buildings WHERE building_name = ?)",
+        "SELECT entry_points.building, entry_points.entry_type, entry_points.i_description, buildings.building_address FROM entry_points, buildings WHERE (id, building, entry_type) = (?, ?, ?) AND building_name = ?",
         [req.body.id, req.body.building, req.body.type, req.body.building],
         function (err, data, fields) {
+            console.log(data);
             if (err) res.send(err);
             else {
-                res.status(200).json({
-                    status: "success",
-                    message: "entry point is retrieved",
-                    data: data // return the info of that entry and its address
-                });
+                var info, coordinate;
+                try {
+                    info = geocoder.getCoordinate(data[0].building_address.replace(/\s/g, '+'));
+                    info.then(
+                        (result) => {
+                            console.log("result ", result);
+                            coordinate = result;
+                            console.log(coordinate);
+                            res.status(200).json({
+                                status: "success",
+                                message: "entry point is retrieved",
+                                data: {
+                                    "building": data[0].building,
+                                    "type": data[0].entry_type,
+                                    "description": data[0].i_description,
+                                    "coordinate": coordinate
+                                } 
+                            });
+                        }
+                    )
+                }
+                catch (err) {
+                    res.status(400).json({
+                        "message": "failed coordinate conversion"
+                    })
+                }                
             }
         }
     )
 }
 
 // get entry points of a building
-exports.getByBuilding = (req, res) => {
-    if (!req.params.name) {
+exports.getByBuilding = (req, res, next) => {
+    if (!req.body.name) {
         res.status(400).send({
             message: "Name cannot be empty, please provide one"
         })
     }
 
     sql.query(
-        "(SELECT * FROM entry_points WHERE building = ?) UNION (SELECT building_address FROM buildings WHERE building_name = ?)",
-        [req.params.name],
+        "(SELECT entry_points.*, buildings.building_address FROM entry_points, buildings WHERE building = ? AND building_name = ?)",
+        [req.body.name, req.body.name],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
@@ -83,17 +104,19 @@ exports.getByBuilding = (req, res) => {
     )
 }
 
-// get all points of a specific type
-exports.getByType = (req, res) => {
-    if (!req.params.type) {
+// get all points of a specific type(s)
+exports.getByType = (req, res, next) => {
+    if (!req.body) {
         res.status(400).send({
-            message: "Type cannot be empty, please provide one"
+            message: "Type array cannot be empty, please provide one"
         })
     }
 
+    const stringType = req.body.type.toString();
+
     sql.query(
-        "SELECT entry_points.building, entry_points.entry_type, entry_points.i_description, buildings.building_address FROM entry_points, buildings WHERE entry_points.entry_type = ? AND buildings.building_name = entry_points.building;",
-        [req.params.type],
+        "SELECT entry_points.building, entry_points.entry_type, entry_points.i_description, buildings.building_address FROM entry_points, buildings WHERE FIND_IN_SET(entry_points.entry_type, ?) AND buildings.building_name = entry_points.building;",
+        [stringType, req.body.name],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
@@ -108,7 +131,7 @@ exports.getByType = (req, res) => {
 }
 
 // update an entry point
-exports.update = (req, res) => {
+exports.update = (req, res, next) => {
     if (!req.body) { 
         res.status(400).send({
             message: "Content cannot be empty"
@@ -119,9 +142,7 @@ exports.update = (req, res) => {
         "SELECT * FROM buildings WHERE building_name=?",
         [req.body.building],
         function (err, data, fields) {
-            if (err) res.send({
-                message: "Building's name might be not in the database yet, please provide this building's profile"
-            });
+            if (err) res.send(err);
         }
     )
 
@@ -141,7 +162,7 @@ exports.update = (req, res) => {
 }
 
 // delete an entry 
-exports.delete = (req, res) => {
+exports.delete = (req, res, next) => {
     if (!req.body) {
         res.status(400).send({
             message: "Content cannot be empty"

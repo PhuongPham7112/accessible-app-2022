@@ -26,7 +26,7 @@ exports.create = (res, req) => {
 
 // retrieve a building profile
 exports.getBuilding = (res, req) => {
-    if (!req.params.name) {
+    if (!req.body.name) {
         res.status(404).send({
             message: "Please provide a building's name"
         })
@@ -34,7 +34,7 @@ exports.getBuilding = (res, req) => {
 
     sql.query(
         "SELECT * FROM buildings WHERE building_name = ?",
-        [res.params.name],
+        [res.body.name],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
@@ -67,7 +67,7 @@ exports.getAll = (res, req) => {
 
 // delete a building profile
 exports.delete = (req, res) => {
-    if (!req.params.name) {
+    if (!req.body.name) {
         res.status(404).send({
             message: "Please provide a building's name"
         })
@@ -75,7 +75,7 @@ exports.delete = (req, res) => {
 
     sql.query(
         "DELETE FROM buildings WHERE building_name = ?",
-        [req.params.name],
+        [req.body.name],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
@@ -90,7 +90,7 @@ exports.delete = (req, res) => {
 
 // update a building's profile
 exports.update = (req, res) => {
-    if (!req.body || !req.params.name) { 
+    if (!req.body) { 
         res.status(400).send({
             message: "Content and name cannot be empty"
         })
@@ -98,7 +98,7 @@ exports.update = (req, res) => {
 
     sql.query(
         "UPDATE buildings SET building_name = ?, building_address = ?, building_description = ? WHERE building_name = ?",
-        [req.body.name, req.body.address, req.body.description, req.params.name],
+        [req.body.name, req.body.address, req.body.description, req.body.old_name],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
