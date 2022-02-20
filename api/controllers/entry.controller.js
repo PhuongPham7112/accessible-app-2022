@@ -130,17 +130,18 @@ exports.getByType = (req, res, next) => {
             message: "Type array cannot be empty, please provide one"
         })
     }
+    console.log(req.body);
 
     const stringType = req.body.type.toString();
+    console.log(req.body.type.toString());
 
     sql.query(
         "SELECT entry_points.building, entry_points.entry_type, entry_points.i_description, buildings.building_address FROM entry_points, buildings WHERE FIND_IN_SET(entry_points.entry_type, ?) AND buildings.building_name = entry_points.building;",
-        [stringType, req.body.name],
+        [stringType],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
                 try {
-                    console.log(data);
                     var collection_data = [];
                     var coordinates = geocoder.getCoordinates(data);
                     coordinates.then(
@@ -153,14 +154,14 @@ exports.getByType = (req, res, next) => {
                                     "coordinate": result[i]
                                 });
                             }
+                            console.log("Coordinates ", collection_data);
                             res.status(200).json({
                                 status: "success",
-                                message: "entry point is bleh",
+                                message: "entry points retrieved",
                                 data: collection_data
                             });
                         }
                     )
-
                 }
                 catch (err) {
                     res.status(400).json({

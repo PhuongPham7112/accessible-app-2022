@@ -36,19 +36,18 @@ exports.getCoordinates = async (entries) => {
         var coordinates = [];
         var promises = [];
         for (let i = 0; i < entries.length; i++) {
-            promises.push(axios.get(entries[i].building_address.replace(/\s/g, '+') + "&key=AIzaSyD-QOR-6ksWJTvFVu4axvHN6TrLd62rJDY").then(response => {
-                coordinates.push(response);
-            }))
+            promises.push(axios.get(entries[i].building_address.replace(/\s/g, '+') + "&key=AIzaSyD-QOR-6ksWJTvFVu4axvHN6TrLd62rJDY"))
         }
         
         Promise.all(promises).then(
-            () => {
-                for (let i = 0; i < coordinates.length; i++) {
-                    coordinates[i] = coordinates[i].data.results[0].geometry.location;
-                }
-                console.log(coordinates); 
+            (response) => {
+                console.log("Data ", response); // results[0].geometry.location
+                response.map(re => {
+                    coordinates.push(re.data.results[0]);
+                })
             }
         )
+        
         return coordinates;
     }
     catch (err) {
