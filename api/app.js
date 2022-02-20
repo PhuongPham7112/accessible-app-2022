@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
-
+require('./routes/building.routes')(app);
 
 // error handler
 app.use(function(err, req, res, next) {
