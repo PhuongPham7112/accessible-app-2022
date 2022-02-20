@@ -49,14 +49,12 @@ exports.get = (req, res, next) => {
             console.log(data);
             if (err) res.send(err);
             else {
-                var info, coordinate;
                 try {
+                    var info, coordinate;
                     info = geocoder.getCoordinate(data[0].building_address.replace(/\s/g, '+'));
                     info.then(
                         (result) => {
-                            console.log("result ", result);
                             coordinate = result;
-                            console.log(coordinate);
                             res.status(200).json({
                                 status: "success",
                                 message: "entry point is retrieved",
@@ -94,11 +92,32 @@ exports.getByBuilding = (req, res, next) => {
         function (err, data, fields) {
             if (err) res.send(err);
             else {
-                res.status(200).json({
-                    status: "success",
-                    message: "entry points of this building are retrieved",
-                    data: data // return the info of that entry and its address
-                });
+                try {
+                    var collection_data = [];
+                    info = geocoder.getCoordinate(data[0].building_address.replace(/\s/g, '+'));
+                    info.then(
+                        (result) => {
+                            for (let i = 0; i < data.length; i++) {
+                                collection_data.push({
+                                    "building": data[i].building,
+                                    "type": data[i].entry_type,
+                                    "description": data[i].i_description,
+                                    "coordinate": result
+                                })
+                            }
+                            res.status(200).json({
+                                status: "success",
+                                message: "entry points of this building are retrieved",
+                                data: collection_data // return the info of that entry and its address
+                            });
+                        }
+                    ) 
+                }
+                catch (err) {
+                    res.status(400).json({
+                        "message": "failed coordinate conversion"
+                    })
+                }                
             }
         }
     )
@@ -120,11 +139,34 @@ exports.getByType = (req, res, next) => {
         function (err, data, fields) {
             if (err) res.send(err);
             else {
-                res.status(200).json({
-                    status: "success",
-                    message: "entry points of this type are retrieved",
-                    data: data // return the info of that entry and its address
-                });
+                try {
+                    console.log(data);
+                    var collection_data = [];
+                    var coordinates = geocoder.getCoordinates(data);
+                    coordinates.then(
+                        (result) => {
+                            for (var i = 0; i < data.length; i++) {
+                                collection_data.push({
+                                    "building": data[i].building,
+                                    "type": data[i].entry_type,
+                                    "description": data[i].i_description,
+                                    "coordinate": result[i]
+                                });
+                            }
+                            res.status(200).json({
+                                status: "success",
+                                message: "entry point is bleh",
+                                data: collection_data
+                            });
+                        }
+                    )
+
+                }
+                catch (err) {
+                    res.status(400).json({
+                        "message": "failed coordinate conversion"
+                    })
+                }
             }
         }
     )
