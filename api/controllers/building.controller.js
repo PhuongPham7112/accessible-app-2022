@@ -97,7 +97,7 @@ exports.update = (req, res) => {
     }
 
     sql.query(
-        "UPDATE buildings SET building_name=?, building_address=?, building_description=? WHERE building_name=?",
+        "UPDATE buildings SET building_name = ?, building_address = ?, building_description = ? WHERE building_name = ?",
         [req.body.name, req.body.address, req.body.description, req.params.name],
         function (err, data, fields) {
             if (err) res.send(err);
