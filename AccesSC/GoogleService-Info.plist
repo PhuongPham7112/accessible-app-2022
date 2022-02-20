@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>867344075248-hn5r12eqca50ma67abqk9leedcm5bu9u.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.867344075248-hn5r12eqca50ma67abqk9leedcm5bu9u</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBP1UGj_HC7JzQZAJzrCEAUYDY2BaPtVOc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>867344075248</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>ekodama.AccesSC</string>
+	<key>PROJECT_ID</key>
+	<string>accessc-39b28</string>
+	<key>STORAGE_BUCKET</key>
+	<string>accessc-39b28.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:867344075248:ios:2a5109d78e4b0cfe7ab535</string>
+</dict>
+</plist>
