@@ -8,6 +8,7 @@ var cors = require("cors");
 var corsOptions = {
   origin: "http://localhost:8081"
 };
+var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -45,7 +46,7 @@ app.use(function(err, req, res, next) {
   });
   // the routes
   
-  const PORT = process.env.PORT || 7000;
+  const PORT = process.env.PORT || 8081;
     
   app.listen(PORT, console.log(`Server started on port ${PORT}`));
   

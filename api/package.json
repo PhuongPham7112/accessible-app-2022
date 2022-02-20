@@ -18,8 +18,12 @@
   },
   "homepage": "https://github.com/PhuongPham7112/accessible-app-2022#readme",
   "dependencies": {
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "mysql": "^2.18.1"
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "path": "^0.12.7"
   }
 }
