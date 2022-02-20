@@ -1,0 +1,32 @@
+{
+  "name": "accessible-app-2022",
+  "version": "1.0.0",
+  "description": "A map app that provides locations of accessible entrances and locations for disabled people - Athena Hacks 2022",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PhuongPham7112/accessible-app-2022.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PhuongPham7112/accessible-app-2022/issues"
+  },
+  "homepage": "https://github.com/PhuongPham7112/accessible-app-2022#readme",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "jade": "^1.11.0",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "path": "^0.12.7"
+  }
+}
