@@ -17,7 +17,7 @@ exports.create = (res, req) => {
             else {
                 res.status(201).json({
                     status: "success",
-                    message: "research is inserted"
+                    message: "building is inserted"
                 });
             }
         }
