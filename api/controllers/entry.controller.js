@@ -141,33 +141,11 @@ exports.getByType = (req, res, next) => {
         function (err, data, fields) {
             if (err) res.send(err);
             else {
-                try {
-                    var collection_data = [];
-                    var coordinates = geocoder.getCoordinates(data);
-                    coordinates.then(
-                        (result) => {
-                            for (var i = 0; i < data.length; i++) {
-                                collection_data.push({
-                                    "building": data[i].building,
-                                    "type": data[i].entry_type,
-                                    "description": data[i].i_description,
-                                    "coordinate": result[i]
-                                });
-                            }
-                            console.log("Coordinates ", collection_data);
-                            res.status(200).json({
-                                status: "success",
-                                message: "entry points retrieved",
-                                data: collection_data
-                            });
-                        }
-                    )
-                }
-                catch (err) {
-                    res.status(400).json({
-                        "message": "failed coordinate conversion"
-                    })
-                }
+                res.status(200).json({
+                    status: "success",
+                    message: "entry points retrieved",
+                    data: data
+                });
             }
         }
     )

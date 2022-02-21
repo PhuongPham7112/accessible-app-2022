@@ -75,30 +75,11 @@ exports.getAll = (req, res) => {
         function (err, data, fields) {
             if (err) res.send(err);
             else {
-                try {
-                    var collection_data = [];
-                    var coordinates = geocoder.getCoordinates(data);
-                    coordinates.then((result) => {
-                            for (var i = 0; i < data.length; i++) {
-                                collection_data.push({
-                                    "building_name": data[i].building_name,
-                                    "building_address": data[i].building_address,
-                                    "building_description": data[i].building_description,
-                                    "coordinate": result[i]
-                                });
-                            }
-                            res.status(200).json({
-                                status: "success",
-                                message: "buildings retrieved",
-                                data: collection_data
-                            });
-                        }
-                    )
-
-                }
-                catch (err) {
-                    res.send(err);
-                }
+                res.status(200).json({
+                    status: "success",
+                    message: "buildings retrieved",
+                    data: data
+                });
             }
         }
     )
