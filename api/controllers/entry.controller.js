@@ -52,9 +52,9 @@ exports.get = (req, res, next) => {
                 try {
                     var info, coordinate;
                     info = geocoder.getCoordinate(data[0].building_address.replace(/\s/g, '+'));
+                    console.log("bruh ", data[0].building_address);
                     info.then(
                         (result) => {
-                            coordinate = result;
                             res.status(200).json({
                                 status: "success",
                                 message: "entry point is retrieved",
@@ -62,7 +62,8 @@ exports.get = (req, res, next) => {
                                     "building": data[0].building,
                                     "type": data[0].entry_type,
                                     "description": data[0].i_description,
-                                    "coordinate": coordinate
+                                    "address": data[0].building_address,
+                                    "coordinate": result
                                 } 
                             });
                         }
@@ -70,7 +71,7 @@ exports.get = (req, res, next) => {
                 }
                 catch (err) {
                     res.status(400).json({
-                        "message": "failed coordinate conversion"
+                        "message": "failed coordinate conversion, " + err.message
                     })
                 }                
             }
@@ -102,6 +103,7 @@ exports.getByBuilding = (req, res, next) => {
                                     "building": data[i].building,
                                     "type": data[i].entry_type,
                                     "description": data[i].i_description,
+                                    "address": data[i].building_address,
                                     "coordinate": result
                                 })
                             }
@@ -130,22 +132,38 @@ exports.getByType = (req, res, next) => {
             message: "Type array cannot be empty, please provide one"
         })
     }
-    console.log(req.body);
-
     const stringType = req.body.type.toString();
-    console.log(req.body.type.toString());
-
     sql.query(
         "SELECT entry_points.building, entry_points.entry_type, entry_points.i_description, buildings.building_address FROM entry_points, buildings WHERE FIND_IN_SET(entry_points.entry_type, ?) AND buildings.building_name = entry_points.building;",
         [stringType],
         function (err, data, fields) {
             if (err) res.send(err);
             else {
-                res.status(200).json({
-                    status: "success",
-                    message: "entry points retrieved",
-                    data: data
-                });
+                try {
+                    var collection_data = [];
+                    geocoder.getCoordinates(data).then(
+                        c_results => {
+                            console.log("from api call: ", c_results);
+                            for (let i = 0; i < data.length; i++) {
+                                collection_data.push({
+                                    "building": data[i].building,
+                                    "type": data[i].entry_type,
+                                    "description": data[i].i_description,
+                                    "address": data[i].building_address,
+                                    "coordinate": c_results[i]
+                                })
+                            }
+                            res.status(200).json({
+                                status: "success",
+                                message: "entry points retrieved",
+                                data: collection_data,
+                            });
+                        }
+                    );
+                }
+                catch (err) {
+                    console.log(err.message);
+                }
             }
         }
     )
